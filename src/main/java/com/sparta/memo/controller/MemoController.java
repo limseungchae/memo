@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +21,20 @@ public class MemoController {
 
     @PostMapping("/memos")
     public MemoResponseDto createMemo(@RequestBody MemoRequestDto requestDto) {
-        return null;
+        // RequestDto -> Entity
+        Memo memo = new Memo(requestDto);
+
+        // Memo Max ID Check
+        Long maxId = memoList.size() > 0 ? Collections.max(memoList.keySet()) + 1 : 1;
+        memo.setId(maxId);
+
+        // DB 저장
+        memoList.put(memo.getId(), memo);
+
+        // Entity -> ResponseDto
+        MemoResponseDto memoResponseDto = new MemoResponseDto(memo);
+
+        return memoResponseDto;
     }
 
 }
