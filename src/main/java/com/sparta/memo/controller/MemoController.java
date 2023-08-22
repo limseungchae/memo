@@ -3,14 +3,12 @@ package com.sparta.memo.controller;
 import com.sparta.memo.dto.MemoRequestDto;
 import com.sparta.memo.dto.MemoResponseDto;
 import com.sparta.memo.entity.Memo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -37,4 +35,12 @@ public class MemoController {
         return memoResponseDto;
     }
 
+    @GetMapping("/memos")
+    public List<MemoResponseDto> getMemos() {
+        // Map To List
+        List<MemoResponseDto> responseList = memoList.values().stream()
+                .map(MemoResponseDto::new).toList();
+
+        return responseList;
+    }
 }
