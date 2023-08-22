@@ -15,4 +15,7 @@ public class Memo {
 
     public Memo(MemoRequestDto requestDto) {
     }
+
+    public void update(MemoRequestDto requestDto) {
+    }
 }
