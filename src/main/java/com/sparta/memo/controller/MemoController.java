@@ -3,6 +3,7 @@ package com.sparta.memo.controller;
 import com.sparta.memo.dto.MemoRequestDto;
 import com.sparta.memo.dto.MemoResponseDto;
 import com.sparta.memo.entity.Memo;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -16,7 +17,11 @@ import java.util.Map;
 @RequestMapping("/api") // 엔드포인트의 기본 경로 설정
 public class MemoController {
 
-    private final Map<Long, Memo> memoList = new HashMap<>(); // 메모를 저장하기 위한 Map 생성
+    private final JdbcTemplate jdbcTemplate;
+
+    public MemoController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     // HTTP POST 요청 처리
     @PostMapping("/memos")
