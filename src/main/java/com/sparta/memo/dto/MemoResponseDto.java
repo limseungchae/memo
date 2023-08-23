@@ -11,4 +11,7 @@ public class MemoResponseDto {
 
     public MemoResponseDto(Memo memo) {
     }
+
+    public MemoResponseDto(Long id, String username, String contents) {
+    }
 }
