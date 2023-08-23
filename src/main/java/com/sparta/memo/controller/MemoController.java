@@ -86,14 +86,15 @@ public class MemoController {
     public Long updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto requestDto) {
         // 해당 메모가 DB에 존재하는지 확인
         // 주어진 ID로 메모를 찾음
-        if(memoList.containsKey(id)) {
-            // 해당 메모 가져오기
-            Memo memo = memoList.get(id);
+        Memo memo = findById(id);
+        if(memo != null) {
 
             // memo 수정
             // 메모 내용 업데이트
-            memo.update(requestDto);
-            return memo.getId();
+            String sql = "UPDATE memo SET username = ?, contents = ? WHERE id = ?";
+            jdbcTemplate.update(sql, requestDto.getUsername(), requestDto.getContents(), id);
+
+            return id;
         } else {
             throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
         }
