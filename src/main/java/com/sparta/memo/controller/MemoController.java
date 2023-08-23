@@ -4,9 +4,13 @@ import com.sparta.memo.dto.MemoRequestDto;
 import com.sparta.memo.dto.MemoResponseDto;
 import com.sparta.memo.entity.Memo;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -30,14 +34,24 @@ public class MemoController {
         // 새 메모 생성
         Memo memo = new Memo(requestDto);
 
-        // Memo Max ID Check
-        // 메모 ID 설정
-        Long maxId = memoList.size() > 0 ? Collections.max(memoList.keySet()) + 1 : 1;
-        memo.setId(maxId);
-
         // DB 저장
         // 메모를 메모 목록에 추가
-        memoList.put(memo.getId(), memo);
+        KeyHolder keyHolder = new GeneratedKeyHolder(); // 기본 키를 반환받기 위한 객체
+
+        String sql = "INSERT INTO memo (username, contents) VALUES (?, ?)";
+        jdbcTemplate.update( con -> {
+                    PreparedStatement preparedStatement = con.prepareStatement(sql,
+                            Statement.RETURN_GENERATED_KEYS);
+
+                    preparedStatement.setString(1, memo.getUsername());
+                    preparedStatement.setString(2, memo.getContents());
+                    return preparedStatement;
+                },
+                keyHolder);
+
+        // DB Insert 후 받아온 기본키 확인
+        Long id = keyHolder.getKey().longValue();
+        memo.setId(id);
 
         // Entity -> ResponseDto
         // 생성된 메모 정보를 응답
