@@ -10,10 +10,13 @@ import java.util.List;
 
 public class MemoService {
 
-    private final JdbcTemplate jdbcTemplate;
+    // 멤버 변수 선언
+    private final MemoRepository memoRepository;
 
+    // 생성자: MemoService(JdbcTemplate jdbcTemplate)가 생성될 때 호출됨
     public MemoService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+        // 멤버 변수 생성
+        this.memoRepository = new MemoRepository(jdbcTemplate);
     }
 
     public MemoResponseDto createMemo(MemoRequestDto requestDto) {
@@ -21,7 +24,6 @@ public class MemoService {
         Memo memo = new Memo(requestDto);
 
         // DB 저장
-        MemoRepository memoRepository = new MemoRepository(jdbcTemplate);
         Memo saveMemo = memoRepository.save(memo);
 
         // Entity -> ResponseDto
@@ -32,12 +34,10 @@ public class MemoService {
 
     public List<MemoResponseDto> getMemos() {
         // DB 조회
-        MemoRepository memoRepository = new MemoRepository(jdbcTemplate);
         return memoRepository.findAll();
     }
 
     public Long updateMemo(Long id, MemoRequestDto requestDto) {
-        MemoRepository memoRepository = new MemoRepository(jdbcTemplate);
         // 해당 메모가 DB에 존재하는지 확인
         Memo memo = memoRepository.findById(id);
         if (memo != null) {
@@ -51,7 +51,6 @@ public class MemoService {
     }
 
     public Long deleteMemo(Long id) {
-        MemoRepository memoRepository = new MemoRepository(jdbcTemplate);
         // 해당 메모가 DB에 존재하는지 확인
         Memo memo = memoRepository.findById(id);
         if (memo != null) {
